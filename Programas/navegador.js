@@ -1,10 +1,10 @@
-
 const iconeNavegador = document.querySelector(".icon-navegador");
 
 iconeNavegador.addEventListener("dblclick", () => {
-    criarJanela("🌐 Navegador",
-        
-        `
+  criarJanela(
+    "🌐 Navegador",
+
+    `
         <iframe
         
             src="https://cat-bounce.com/message/index.html"
@@ -12,6 +12,6 @@ iconeNavegador.addEventListener("dblclick", () => {
             height="100%"
             frameborder="0">
         </iframe>
-        `
-    );
+        `,
+  );
 });
