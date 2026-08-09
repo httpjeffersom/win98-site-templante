@@ -1,22 +1,23 @@
-function criarJanela(titulo, conteudo) {
-  const janela = document.createElement("div");
+async function criarJanela(titulo, arquivoHtml) {
 
-  janela.className = "window";
+    const janela = document.createElement("div");
 
-  const desktop = document.getElementById("desktop");
+    janela.className = "window";
 
-  // Define o tamanho da janela (80% do desktop)
-  const largura = desktop.clientWidth * 0.8;
-  const altura = desktop.clientHeight * 0.8;
+    const desktop = document.getElementById("desktop");
 
-  janela.style.width = `${largura}px`;
-  janela.style.height = `${altura}px`;
+    // Tamanho da janela
+    const largura = desktop.clientWidth * 0.8;
+    const altura = desktop.clientHeight * 0.8;
 
-  // Centraliza a janela no desktop
-  janela.style.left = `${(desktop.clientWidth - largura) / 2}px`;
-  janela.style.top = `${(desktop.clientHeight - altura) / 2}px`;
+    janela.style.width = `${largura}px`;
+    janela.style.height = `${altura}px`;
 
-  janela.innerHTML = `
+    // Centraliza
+    janela.style.left = `${(desktop.clientWidth - largura) / 2}px`;
+    janela.style.top = `${(desktop.clientHeight - altura) / 2}px`;
+
+    janela.innerHTML = `
         <div class="window-title">
             <span>${titulo}</span>
 
@@ -26,65 +27,50 @@ function criarJanela(titulo, conteudo) {
         </div>
 
         <div class="window-content">
-            ${conteudo}
+            Carregando...
         </div>
     `;
 
-  // Adiciona a janela ao desktop
-  desktop.appendChild(janela);
+    desktop.appendChild(janela);
 
-  // Cria o botão correspondente na barra de tarefas
-  criarBotaoPrograma(janela, titulo);
+    // Botão na barra de tarefas
+    criarBotaoPrograma(janela, titulo);
 
-  // Botão de fechar
-  const botaoFechar = janela.querySelector(".fechar");
+    // Carrega o HTML do programa
+    try {
 
-  botaoFechar.addEventListener("click", () => {
-    removerBotaoPrograma(janela);
+        const resposta = await fetch(arquivoHtml);
 
-    janela.remove();
-  });
+        if (!resposta.ok) {
+            throw new Error("Não foi possível carregar o arquivo.");
+        }
 
-  // função para ativar o arraste da janela
-  function ativarArraste(janela) {
-    const barra = janela.querySelector(".window-title");
-    const desktop = document.getElementById("desktop");
+        const html = await resposta.text();
 
-    let arrastando = false;
-    let offsetX = 0;
-    let offsetY = 0;
+        janela.querySelector(".window-content").innerHTML = html;
 
-    barra.addEventListener("mousedown", (e) => {
-      arrastando = true;
+    } catch (erro) {
 
-      offsetX = e.clientX - janela.offsetLeft;
-      offsetY = e.clientY - janela.offsetTop;
+        janela.querySelector(".window-content").innerHTML = `
+            <p>Erro ao carregar o programa.</p>
+        `;
+
+        console.error(erro);
+
+    }
+
+    // Fechar
+    const botaoFechar = janela.querySelector(".fechar");
+
+    botaoFechar.addEventListener("click", () => {
+
+        removerBotaoPrograma(janela);
+
+        janela.remove();
+
     });
 
-    document.addEventListener("mousemove", (e) => {
-      if (!arrastando) return;
+    // Arrastar
+    ativarArraste(janela);
 
-      // Posição do mouse relativa ao desktop
-      const rect = desktop.getBoundingClientRect();
-
-      let novoLeft = e.clientX - rect.left - offsetX;
-      let novoTop = e.clientY - rect.top - offsetY;
-
-      const maxLeft = desktop.clientWidth - janela.offsetWidth;
-      const maxTop = desktop.clientHeight - janela.offsetHeight;
-
-      novoLeft = Math.max(0, Math.min(novoLeft, maxLeft));
-      novoTop = Math.max(0, Math.min(novoTop, maxTop));
-
-      janela.style.left = novoLeft + "px";
-      janela.style.top = novoTop + "px";
-    });
-
-    document.addEventListener("mouseup", () => {
-      arrastando = false;
-    });
-  }
-
-  // Ativa o arraste da janela
-  ativarArraste(janela);
 }

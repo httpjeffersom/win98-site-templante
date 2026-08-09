@@ -1,0 +1,101 @@
+.icon-navegador {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    width: 80px;
+    padding: 5px;
+
+    background: transparent;
+    border: none;
+    color: white;
+    font-family: "MS Sans Serif", sans-serif;
+    font-size: 12px;
+    text-align: center;
+    cursor: pointer;
+}   
+
+.icon-navegador img {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 4px;
+}
+
+.icon-navegador span {
+    word-wrap: break-word;
+
+}
+
+.navegador {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.barra-navegador {
+    width: 100%;
+    min-height: 38px;
+
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    padding: 4px;
+
+    background: #c0c0c0;
+
+    border-bottom: 2px solid #808080;
+}
+
+.barra-navegador button {
+    height: 28px;
+    min-width: 32px;
+
+    background: #c0c0c0;
+
+    border-top: 2px solid white;
+    border-left: 2px solid white;
+    border-right: 2px solid #808080;
+    border-bottom: 2px solid #808080;
+
+    font-family: "MS Sans Serif", sans-serif;
+    font-size: 14px;
+
+    cursor: pointer;
+}
+
+.barra-navegador button:active {
+    border-top: 2px solid #808080;
+    border-left: 2px solid #808080;
+    border-right: 2px solid white;
+    border-bottom: 2px solid white;
+}
+
+#endereco {
+    width: 80%;
+    height: 26px;
+
+    padding: 3px 6px;
+
+    background: white;
+
+    border-top: 2px solid #808080;
+    border-left: 2px solid #808080;
+    border-right: 2px solid white;
+    border-bottom: 2px solid white;
+
+    font-family: "MS Sans Serif", sans-serif;
+    font-size: 13px;
+
+    outline: none;
+}
+
+#pagina {
+    width: 100%;
+    flex: 1;
+
+    border: none;
+}
