@@ -1,75 +1,65 @@
 <!doctype html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Jeffersom.net</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="Programas/meucomputador.css">
-    <link rel="stylesheet" href="Programas/navegador.css">
-    <link rel="icon" href="imagens/favicon.png" type="image/png">
-</head>
-<body>
-
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="Programas/meucomputador.css" />
+    <link rel="stylesheet" href="Programas/navegador.css" />
+    <link rel="icon" href="imagens/favicon.png" type="image/png" />
+  </head>
+  <body>
     <div id="desktop">
-    
-        <button class="icon-meucomputer">
-        <img src="imagens/icons-desktop/meu_computador.png" alt="Meu Computador">
+      <button class="icon-meucomputer">
+        <img
+          src="imagens/icons-desktop/meu_computador.png"
+          alt="Meu Computador"
+        />
         <span>Meu computador</span>
-        </button>
+      </button>
 
-        <button class="icon-navegador">
-        <img src="imagens/icons-desktop/navegador.png" alt="Navegador">
+      <button class="icon-navegador">
+        <img src="imagens/icons-desktop/navegador.png" alt="Navegador" />
         <span>Navegador</span>
+      </button>
+
+      <!-- Menu Iniciar -->
+      <div id="menu-iniciar">
+        <div id="nome-iniciar">Jeffersom.net</div>
+
+        <div id="itens-menu">
+          <button class="item-menu">📁 teste</button>
+
+          <button class="item-menu">👤 teste</button>
+
+          <button class="item-menu">💻 teste</button>
+
+          <button class="item-menu">📄 teste</button>
+
+          <button class="item-menu">📧 teste</button>
+        </div>
+      </div>
+      <!-- fim do menu iniciar -->
+
+      <!-- Barra de tarefas -->
+      <div id="barra-tarefa">
+        <button id="iniciar-botao">
+          <img src="imagens/windows_iniciar.png" alt="Windows" />
+          <span>Iniciar</span>
         </button>
 
-    
-    
-    <!-- Menu Iniciar -->
-           <div id="menu-iniciar">
+        <div id="programas-abertos"></div>
 
-           <div id="nome-iniciar">
-                Jeffersom.net
-            </div>
-
-            <div id="itens-menu">
-                <button class="item-menu">📁 teste</button>
-                
-                <button class="item-menu">👤 teste</button>
-                
-                <button class="item-menu">💻 teste</button>
-                
-                <button class="item-menu">📄 teste</button>
-                
-                <button class="item-menu">📧 teste</button>
-
-            </div>
-
-        </div>
-<!-- fim do menu iniciar -->
-        
-<!-- Barra de tarefas -->
-        <div id="barra-tarefa">
-
-            <button id="iniciar-botao"> <img src="imagens/windows_iniciar.png" alt="Windows">
-    <span>Iniciar</span>
-            </button>
-
-            <div id="programas-abertos"> </div>
-
-            <div id="relogio"></div>
-
-        </div>
-<!-- fim da Barra de tarefas -->
+        <div id="relogio"></div>
+      </div>
+      <!-- fim da Barra de tarefas -->
     </div>
-    
+
     <script src="componentes/programasabertos.js"></script>
     <script src="componentes/janela.js"></script>
     <script src="Programas/meucomputador.js"></script>
     <script src="Programas/navegador.js"></script>
     <script src="script.js"></script>
-   
-
-</body>
-
+  </body>
 </html>
