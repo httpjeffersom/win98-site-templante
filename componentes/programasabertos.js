@@ -11,10 +11,29 @@ function criarBotaoPrograma(janela, titulo) {
   // Guarda referência do botão na janela
   janela.botaoPrograma = botao;
 
-  // Ao clicar, mostra a janela
+  // Ao clicar, alterna entre mostrar e minimizar a janela
   botao.addEventListener("click", () => {
-    janela.style.display = "block";
+    alternarEstadoJanela(janela);
   });
+}
+
+function alternarEstadoJanela(janela) {
+  const minimizada = janela.classList.contains("minimizada");
+
+  if (minimizada) {
+    janela.classList.remove("minimizada");
+    janela.style.display = "flex";
+  } else {
+    janela.classList.add("minimizada");
+    janela.style.display = "none";
+  }
+
+  if (janela.botaoPrograma) {
+    janela.botaoPrograma.classList.toggle(
+      "ativo",
+      !janela.classList.contains("minimizada"),
+    );
+  }
 }
 
 function removerBotaoPrograma(janela) {

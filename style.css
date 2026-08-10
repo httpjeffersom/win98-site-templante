@@ -178,10 +178,52 @@ body {
   cursor: move;
 }
 
+.window-buttons {
+  display: flex;
+  gap: 2px;
+}
+
+.window-buttons button {
+  width: 16px;
+  height: 14px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #c0c0c0;
+  color: #000;
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-right: 2px solid #808080;
+  border-bottom: 2px solid #808080;
+  font-size: 11px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.window-buttons button:active {
+  border-top: 2px solid #808080;
+  border-left: 2px solid #808080;
+  border-right: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
+}
+
 .window-content {
   flex: 1;
   background: white;
   padding: 10px;
+}
+
+.window.arrastando {
+  cursor: grabbing;
+}
+
+.window.arrastando .window-title {
+  cursor: grabbing;
+}
+
+.window.minimizada {
+  display: none !important;
 }
 
 #programas-abertos {
@@ -210,4 +252,15 @@ body {
   border-bottom: 2px solid #808080;
 
   cursor: pointer;
+  padding: 0 8px;
+  text-align: left;
+  font-size: 12px;
+}
+
+.botao-programa.ativo {
+  background: #a8a8a8;
+  border-top: 2px solid #808080;
+  border-left: 2px solid #808080;
+  border-right: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
 }
