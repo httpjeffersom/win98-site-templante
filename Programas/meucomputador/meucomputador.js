@@ -1,10 +1,6 @@
-//criarJanela("Meu Computador");
-
-const iconeMeuComputador = document.querySelector(".icon-meucomputer");
-
-iconeMeuComputador.addEventListener("dblclick", () => {
-  criarJanela(
-    "💻 Meu Computador",
-    "Programas/meucomputador/meucomputador.html"  
-  );
+DesktopApp.registrarPrograma({
+  id: "meu-computador",
+  titulo: "💻 Meu Computador",
+  seletorIcone: ".icon-meucomputer",
+  caminhoHtml: "Programas/meucomputador/meucomputador.html",
 });

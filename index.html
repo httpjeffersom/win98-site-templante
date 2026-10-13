@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="Programas/meucomputador/meucomputador.css" />
     <link rel="stylesheet" href="Programas/navegador/navegador.css" />
+    <link rel="stylesheet" href="Programas/calculadora/calculadora.css" />
+    <link rel="stylesheet" href="componentes/som-inicializacao.css" />
     <link rel="icon" href="imagens/favicon.png" type="image/png" />
   </head>
   <body>
@@ -22,6 +24,11 @@
       <button class="icon-navegador">
         <img src="imagens/icons-desktop/navegador.png" alt="Navegador" />
         <span>Navegador</span>
+      </button>
+
+      <button class="icon-calculadora">
+        <img src="imagens/icons-desktop/calculadora.svg" alt="Calculadora" />
+        <span>Calculadora</span>
       </button>
 
       <!-- Menu Iniciar -->
@@ -51,15 +58,17 @@
 
         <div id="programas-abertos"></div>
 
+        <button id="botao-som-inicializacao" type="button" aria-label="Reproduzir som de inicialização" title="Reproduzir som de inicialização">🔊</button>
         <div id="relogio"></div>
       </div>
       <!-- fim da Barra de tarefas -->
     </div>
 
-    <script src="componentes/programasabertos.js"></script>
+    <script src="script.js"></script>
     <script src="componentes/janela.js"></script>
     <script src="Programas/meucomputador/meucomputador.js"></script>
     <script src="Programas/navegador/navegador.js"></script>
-    <script src="script.js"></script>
+    <script src="Programas/calculadora/calculadora.js"></script>
+    <script src="componentes/som-inicializacao.js"></script>
   </body>
 </html>

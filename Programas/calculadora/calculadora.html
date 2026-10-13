@@ -1,0 +1,48 @@
+<section class="calculadora" aria-label="Calculadora">
+  <div class="calculadora-memoria" aria-live="polite">Memória vazia</div>
+  <output class="calculadora-display" aria-label="Visor" aria-live="polite">0</output>
+
+  <div class="calculadora-teclas">
+    <div class="calculadora-linha calculadora-memoria-teclas">
+      <button type="button" data-calc-action="memory-clear">MC</button>
+      <button type="button" data-calc-action="memory-recall">MR</button>
+      <button type="button" data-calc-action="memory-store">MS</button>
+      <button type="button" data-calc-action="memory-add">M+</button>
+    </div>
+    <div class="calculadora-linha">
+      <button type="button" data-calc-action="backspace" aria-label="Apagar último dígito">←</button>
+      <button type="button" data-calc-action="clear-entry">CE</button>
+      <button type="button" data-calc-action="clear">C</button>
+      <button type="button" data-calc-action="square-root" aria-label="Raiz quadrada">√</button>
+    </div>
+    <div class="calculadora-linha">
+      <button type="button" data-calc-value="7">7</button>
+      <button type="button" data-calc-value="8">8</button>
+      <button type="button" data-calc-value="9">9</button>
+      <button type="button" data-calc-action="percent">%</button>
+    </div>
+    <div class="calculadora-linha">
+      <button type="button" data-calc-value="4">4</button>
+      <button type="button" data-calc-value="5">5</button>
+      <button type="button" data-calc-value="6">6</button>
+      <button type="button" data-calc-op="divide">÷</button>
+    </div>
+    <div class="calculadora-linha">
+      <button type="button" data-calc-value="1">1</button>
+      <button type="button" data-calc-value="2">2</button>
+      <button type="button" data-calc-value="3">3</button>
+      <button type="button" data-calc-op="multiply">×</button>
+    </div>
+    <div class="calculadora-linha">
+      <button type="button" data-calc-value="0">0</button>
+      <button type="button" data-calc-action="sign" aria-label="Trocar sinal">±</button>
+      <button type="button" data-calc-action="decimal">.</button>
+      <button type="button" data-calc-op="subtract">−</button>
+    </div>
+    <div class="calculadora-linha calculadora-linha-final">
+      <button type="button" data-calc-action="reciprocal" aria-label="Inverso">1/x</button>
+      <button type="button" data-calc-op="add">+</button>
+      <button type="button" class="calculadora-igual" data-calc-action="equals">=</button>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,132 @@
+.icon-calculadora {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  padding: 5px;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font: 12px "MS Sans Serif", sans-serif;
+  text-align: center;
+  cursor: pointer;
+}
+
+.icon-calculadora img {
+  width: 32px;
+  height: 32px;
+  margin-bottom: 4px;
+  image-rendering: pixelated;
+}
+
+.icon-calculadora span {
+  overflow-wrap: break-word;
+}
+
+.window-content:has(.calculadora) {
+  display: flex;
+  justify-content: center;
+  overflow: auto;
+  padding: 4px;
+  background: #c0c0c0;
+}
+
+.calculadora {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: min(100%, 280px);
+  min-width: 220px;
+  padding: 10px;
+  border-top: 2px solid #fff;
+  border-left: 2px solid #fff;
+  border-right: 2px solid #808080;
+  border-bottom: 2px solid #808080;
+  background: #c0c0c0;
+  color: #000;
+  font: 12px Arial, sans-serif;
+}
+
+.calculadora-memoria {
+  min-height: 14px;
+  color: #555;
+  text-align: right;
+  font-size: 11px;
+}
+
+.calculadora-display {
+  display: block;
+  overflow: hidden;
+  width: 100%;
+  min-height: 42px;
+  padding: 5px 7px;
+  border-top: 2px solid #808080;
+  border-left: 2px solid #808080;
+  border-right: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  background: #e5f0d0;
+  color: #15220e;
+  font: 26px/28px "Courier New", monospace;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.calculadora-teclas {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.calculadora-linha {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.calculadora-linha button {
+  min-width: 0;
+  min-height: 34px;
+  padding: 3px;
+  border-top: 2px solid #fff;
+  border-left: 2px solid #fff;
+  border-right: 2px solid #404040;
+  border-bottom: 2px solid #404040;
+  background: #c0c0c0;
+  color: #000;
+  font: bold 15px Arial, sans-serif;
+  cursor: pointer;
+}
+
+.calculadora-linha button:active,
+.calculadora-linha button.pressionada {
+  border-top-color: #404040;
+  border-left-color: #404040;
+  border-right-color: #fff;
+  border-bottom-color: #fff;
+}
+
+.calculadora-memoria-teclas button {
+  min-height: 26px;
+  color: #000080;
+  font-size: 11px;
+}
+
+.calculadora-linha-final {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.calculadora-linha-final .calculadora-igual {
+  grid-column: span 2;
+  background: #b8c9dc;
+}
+
+@media (max-width: 360px) {
+  .calculadora {
+    min-width: 0;
+  }
+
+  .calculadora-linha {
+    gap: 3px;
+  }
+}

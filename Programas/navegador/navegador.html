@@ -1,38 +1,88 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-   <div class="navegador">
+<div class="navegador">
+  <div class="menu-navegador" aria-label="Menu do navegador">
+    <button type="button">Arquivo</button>
+    <button type="button">Editar</button>
+    <button type="button">Exibir</button>
+    <button type="button">Favoritos</button>
+    <button type="button">Ferramentas</button>
+    <button type="button">Ajuda</button>
+  </div>
 
-    <div class="barra-navegador">
+  <div class="barra-ferramentas" aria-label="Ferramentas de navegação">
+    <button type="button" class="botao-navegacao" data-acao="voltar" title="Voltar">
+      <span class="icone-ferramenta">←</span><span>Voltar</span>
+    </button>
+    <button type="button" class="botao-navegacao" data-acao="avancar" title="Avançar">
+      <span class="icone-ferramenta">→</span><span>Avançar</span>
+    </button>
+    <button type="button" class="botao-navegacao compacto" data-acao="parar" title="Parar">
+      <span class="icone-ferramenta">×</span>
+    </button>
+    <button type="button" class="botao-navegacao compacto" data-acao="atualizar" title="Atualizar">
+      <span class="icone-ferramenta">↻</span>
+    </button>
+    <button type="button" class="botao-navegacao" data-acao="inicio" title="Página inicial">
+      <span class="icone-ferramenta">⌂</span><span>Início</span>
+    </button>
+    <span class="separador-ferramentas" aria-hidden="true"></span>
+    <button type="button" class="botao-navegacao botao-busca" data-acao="foco-busca" title="Pesquisar">
+      <span class="icone-ferramenta">🔎</span><span>Pesquisar</span>
+    </button>
+    <button type="button" class="botao-navegacao" data-acao="favoritos" title="Favoritos">
+      <span class="icone-ferramenta">★</span><span>Favoritos</span>
+    </button>
+    <button type="button" class="botao-navegacao" data-acao="nova-aba" title="Abrir a página em uma nova aba">
+      <span class="icone-ferramenta">↗</span><span>Abrir fora</span>
+    </button>
+  </div>
 
-        <button id="voltar" title="Voltar">←</button>
+  <form class="barra-endereco" autocomplete="off">
+    <label for="endereco">Endereço</label>
+    <span class="icone-endereco" aria-hidden="true">🌐</span>
+    <input id="endereco" name="endereco" type="text" value="https://www.google.com/" aria-label="Endereço da página">
+    <button type="submit">Ir</button>
+  </form>
 
-        <button id="avancar" title="Avançar">→</button>
+  <div class="barra-links">
+    <span>Links</span>
+    <a href="https://www.google.com/" data-url="https://www.google.com/">Google</a>
+    <a href="https://www.microsoft.com/" data-url="https://www.microsoft.com/">Microsoft</a>
+  </div>
 
-        <button id="atualizar" title="Atualizar">↻</button>
+  <main class="area-pagina">
+    <section class="pagina-inicial" aria-label="Página inicial de busca">
+      <nav class="busca-links-topo" aria-label="Serviços de busca">
+        <a href="#" class="busca-link-ativo">Web</a>
+        <a href="https://www.google.com/imghp" target="_blank" rel="noopener noreferrer">Imagens</a>
+        <a href="https://groups.google.com/" target="_blank" rel="noopener noreferrer">Grupos</a>
+        <a href="https://news.google.com/" target="_blank" rel="noopener noreferrer">Notícias</a>
+        <a href="https://about.google/" target="_blank" rel="noopener noreferrer">mais ▼</a>
+      </nav>
 
-        <input
-            id="endereco"
-            type="text"
-            value="https://cat-bounce.com/message/index.html"
-        >
+      <div class="busca-centro">
+        <div class="logo-busca" aria-label="Busca Web">Busca</div>
+        <form class="form-busca">
+          <label for="campo-busca">Pesquise na Web</label>
+          <input id="campo-busca" name="q" type="search" autocomplete="off" aria-label="Pesquisar na Web">
+          <div class="botoes-busca">
+            <button type="submit">Pesquisar</button>
+            <button type="button" data-acao="sorte">Estou com sorte</button>
+          </div>
+        </form>
+        <p class="busca-nota">A pesquisa na Web ao alcance de todos.</p>
+      </div>
 
-        <button id="ir">Ir</button>
+      <footer class="rodape-busca">
+        <div><a href="https://ads.google.com/" target="_blank" rel="noopener noreferrer">Publicidade</a> · <a href="https://about.google/" target="_blank" rel="noopener noreferrer">Sobre o Google</a></div>
+        <p>Busca Web · 2007</p>
+      </footer>
+    </section>
+    <iframe class="pagina-externa" title="Página da Web" hidden></iframe>
+  </main>
 
-    </div>
-
-    <iframe
-        id="pagina"
-        src="https://cat-bounce.com/message/index.html"
-        frameborder="0">
-    </iframe>
-
+  <div class="barra-status">
+    <span class="indicador-status" aria-hidden="true"></span>
+    <span class="texto-status">Concluído</span>
+    <span class="zona-seguranca">Internet</span>
+  </div>
 </div>
-</div>
-</body>
-</html>
