@@ -121,6 +121,7 @@ const WindowManager = (() => {
           janela.style.left = `${(desktop.clientWidth - largura) / 2}px`;
           janela.style.top = `${(desktop.clientHeight - altura) / 2}px`;
         }
+
       } catch (erro) {
         janela.querySelector(".window-content").innerHTML = `
           <p>Erro ao carregar o programa.</p>
