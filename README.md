@@ -14,15 +14,7 @@ Projeto de desktop com visual estilo Windows 98, recriando uma experiência de a
 
 ## Como executar
 
-1. Abra o arquivo `index.html` em um navegador.
-2. Ou sirva a pasta localmente com um servidor HTTP, por exemplo:
-
-```bash
-python -m http.server 8000
-```
-
-Em seguida, acesse `http://localhost:8000`.
-
+Abra o arquivo `index.html` diretamente no navegador. 
 ## Tecnologias
 
 - HTML
