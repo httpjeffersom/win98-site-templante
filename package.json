@@ -1,0 +1,11 @@
+{
+  "name": "win98-site-templante",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Desktop com visual Windows 98 feito em HTML, CSS e JavaScript.",
+  "scripts": {
+    "start": "node servidor.js",
+    "dev": "node servidor.js"
+  },
+  "license": "GPL-3.0-only"
+}

@@ -1,29 +1,3 @@
-.icon-navegador {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 80px;
-  padding: 5px;
-  background: transparent;
-  border: none;
-  color: white;
-  font-family: "MS Sans Serif", sans-serif;
-  font-size: 12px;
-  text-align: center;
-  cursor: pointer;
-}
-
-.icon-navegador img {
-  width: 32px;
-  height: 32px;
-  margin-bottom: 4px;
-}
-
-.icon-navegador span {
-  word-wrap: break-word;
-}
-
 .window-content:has(.navegador) {
   display: flex;
   overflow: hidden;
@@ -353,6 +327,52 @@
   flex: 1;
   border: 0;
   background: #fff;
+}
+
+.aviso-externo {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+
+  margin: 0;
+  padding: 5px 8px;
+
+  background: #ffffe1;
+  border-top: 1px solid #808080;
+
+  color: #333;
+  font-size: 11px;
+}
+
+.aviso-externo[hidden] {
+  display: none;
+}
+
+.aviso-externo button {
+  flex: none;
+  padding: 2px 8px;
+  border-top: 1px solid #fff;
+  border-left: 1px solid #fff;
+  border-right: 1px solid #404040;
+  border-bottom: 1px solid #404040;
+  background: #c0c0c0;
+  color: #000;
+  font: 11px Tahoma, Arial, sans-serif;
+  cursor: pointer;
+}
+
+.aviso-externo button:active {
+  border-top-color: #404040;
+  border-left-color: #404040;
+  border-right-color: #fff;
+  border-bottom-color: #fff;
 }
 
 .barra-status {

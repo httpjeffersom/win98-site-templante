@@ -1,0 +1,186 @@
+<section class="bloco-de-notas" aria-label="Bloco de Notas">
+  <div class="bloco-menu" role="menubar">
+    <div class="bloco-menu-grupo">
+      <button
+        type="button"
+        class="bloco-menu-botao"
+        data-menu="arquivo"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        Arquivo
+      </button>
+      <div class="bloco-menu-lista" data-lista="arquivo" hidden>
+        <button type="button" data-acao="novo">Novo</button>
+        <button type="button" data-acao="abrir">Abrir…</button>
+        <div class="bloco-menu-separador" role="separator"></div>
+        <button type="button" data-acao="salvar">Salvar</button>
+        <button type="button" data-acao="salvar-como">Salvar como…</button>
+        <button type="button" data-acao="excluir-do-desktop">
+          Excluir do Desktop
+        </button>
+        <div class="bloco-menu-separador" role="separator"></div>
+        <button type="button" data-acao="sair">Sair</button>
+      </div>
+    </div>
+
+    <div class="bloco-menu-grupo">
+      <button
+        type="button"
+        class="bloco-menu-botao"
+        data-menu="editar"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        Editar
+      </button>
+      <div class="bloco-menu-lista" data-lista="editar" hidden>
+        <button type="button" data-acao="selecionar-tudo">Selecionar tudo</button>
+        <button type="button" data-acao="hora-data">Hora/Data</button>
+      </div>
+    </div>
+
+    <div class="bloco-menu-grupo">
+      <button
+        type="button"
+        class="bloco-menu-botao"
+        data-menu="formatar"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        Formatar
+      </button>
+      <div class="bloco-menu-lista" data-lista="formatar" hidden>
+        <button type="button" data-acao="quebra-linha" aria-pressed="true">
+          <span class="bloco-menu-marcador" aria-hidden="true">✓</span>
+          Quebra automática de linha
+        </button>
+      </div>
+    </div>
+
+    <div class="bloco-menu-grupo">
+      <button
+        type="button"
+        class="bloco-menu-botao"
+        data-menu="ajuda"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        Ajuda
+      </button>
+      <div class="bloco-menu-lista" data-lista="ajuda" hidden>
+        <button type="button" data-acao="sobre">Sobre o Bloco de Notas</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="bloco-editor">
+    <textarea
+      class="bloco-texto"
+      wrap="soft"
+      spellcheck="false"
+      aria-label="Área de texto do Bloco de Notas"
+      data-foco-inicial
+    ></textarea>
+  </div>
+
+  <div class="bloco-status">
+    <span class="bloco-status-arquivo">Sem título</span>
+    <span class="bloco-status-posicao">Ln 1, Col 1</span>
+    <span class="bloco-status-estado" aria-live="polite">Pronto</span>
+  </div>
+
+  <input
+    class="bloco-arquivo"
+    type="file"
+    accept=".txt,.md,.log,.csv,.json,text/plain"
+    hidden
+  />
+
+  <div
+    class="bloco-dialogo"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="bloco-titulo-sobre"
+    data-dialogo="sobre"
+    hidden
+  >
+    <div class="bloco-dialogo-titulo" id="bloco-titulo-sobre">
+      Sobre o Bloco de Notas
+    </div>
+    <div class="bloco-dialogo-corpo">
+      <p><strong>Bloco de Notas</strong></p>
+      <p>Parte do projeto Jeffersom.net, inspirado no Windows 98.</p>
+      <p>
+        Os arquivos salvos ficam no Desktop e continuam disponíveis ao reabrir
+        o site neste navegador.
+      </p>
+    </div>
+    <div class="bloco-dialogo-botoes">
+      <button type="button" data-acao="fechar-dialogo">OK</button>
+    </div>
+  </div>
+
+  <div
+    class="bloco-dialogo"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="bloco-titulo-salvar"
+    data-dialogo="salvar"
+    hidden
+  >
+    <div class="bloco-dialogo-titulo" id="bloco-titulo-salvar">
+      Salvar como
+    </div>
+    <form class="bloco-formulario" data-formulario="salvar">
+      <label class="bloco-rotulo" for="bloco-nome-arquivo">
+        Nome do arquivo:
+      </label>
+      <input
+        class="bloco-campo"
+        id="bloco-nome-arquivo"
+        name="nome"
+        type="text"
+        maxlength="60"
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <p class="bloco-dialogo-erro" data-erro-salvar hidden></p>
+      <div class="bloco-dialogo-botoes">
+        <button type="submit" class="bloco-botao-padrao">Salvar</button>
+        <button type="button" data-acao="fechar-dialogo">Cancelar</button>
+      </div>
+    </form>
+  </div>
+
+  <div
+    class="bloco-dialogo"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="bloco-titulo-abrir"
+    data-dialogo="abrir"
+    hidden
+  >
+    <div class="bloco-dialogo-titulo" id="bloco-titulo-abrir">Abrir</div>
+    <div class="bloco-dialogo-corpo">
+      <p class="bloco-dialogo-dica">Arquivos salvos no Desktop:</p>
+      <ul class="bloco-lista-arquivos"></ul>
+      <p class="bloco-lista-vazia" hidden>
+        Nenhum arquivo salvo no Desktop ainda.
+      </p>
+    </div>
+    <div class="bloco-dialogo-botoes bloco-dialogo-botoes-lista">
+      <button
+        type="button"
+        class="bloco-botao-padrao"
+        data-acao="abrir-selecionado"
+      >
+        Abrir
+      </button>
+      <button type="button" data-acao="abrir-computador">
+        Do computador…
+      </button>
+      <button type="button" data-acao="fechar-dialogo">Cancelar</button>
+    </div>
+  </div>
+</section>

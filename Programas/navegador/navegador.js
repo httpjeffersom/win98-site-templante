@@ -8,6 +8,7 @@ DesktopApp.registrarPrograma({
 (() => {
   const estados = new WeakMap();
   const paginaInicial = { tipo: "inicio", url: "https://www.google.com/" };
+
   function obterEstado(navegador) {
     let estado = estados.get(navegador);
 
@@ -33,16 +34,23 @@ DesktopApp.registrarPrograma({
     if (endereco) endereco.value = url;
   }
 
+  function definirAvisoExterno(navegador, visivel) {
+    const aviso = navegador.querySelector(".aviso-externo");
+    if (aviso) aviso.hidden = !visivel;
+  }
+
   function mostrarPagina(navegador, pagina) {
     const inicial = navegador.querySelector(".pagina-inicial");
     const externa = navegador.querySelector(".pagina-externa");
     if (!inicial || !externa) return;
 
     atualizarEndereco(navegador, pagina.url);
+
     if (pagina.tipo === "inicio") {
-      inicial.hidden = false;
       externa.hidden = true;
       externa.removeAttribute("src");
+      definirAvisoExterno(navegador, false);
+      inicial.hidden = false;
       inicial.innerHTML = obterEstado(navegador).paginaInicialHtml;
       definirStatus(navegador, "Concluído");
       return;
@@ -51,6 +59,7 @@ DesktopApp.registrarPrograma({
     if (pagina.tipo === "busca") {
       externa.hidden = true;
       externa.removeAttribute("src");
+      definirAvisoExterno(navegador, false);
       renderizarResultados(navegador, pagina.consulta, pagina.url);
       definirStatus(navegador, "Resultados da pesquisa");
       return;
@@ -58,14 +67,25 @@ DesktopApp.registrarPrograma({
 
     inicial.hidden = true;
     externa.hidden = false;
-    externa.src = pagina.url;
+    definirAvisoExterno(navegador, true);
+
+    if (externa.getAttribute("src") !== pagina.url) {
+      externa.src = pagina.url;
+    }
+
     definirStatus(navegador, `Abrindo ${pagina.url}`);
   }
 
   function registrarPagina(navegador, pagina, adicionarAoHistorico = true) {
     const estado = obterEstado(navegador);
+    const atual = estado.historico[estado.indice];
+    const mesmaPagina =
+      atual &&
+      atual.tipo === pagina.tipo &&
+      atual.url === pagina.url &&
+      (atual.consulta || "") === (pagina.consulta || "");
 
-    if (adicionarAoHistorico) {
+    if (adicionarAoHistorico && !mesmaPagina) {
       estado.historico = estado.historico.slice(0, estado.indice + 1);
       estado.historico.push(pagina);
       estado.indice = estado.historico.length - 1;
@@ -107,16 +127,10 @@ DesktopApp.registrarPrograma({
     const endereco = url.href;
     const pagina = { tipo: "externa", url: endereco };
 
-    if (
-      url.hostname === "busca.local" &&
-      url.pathname === "/"
-    ) {
+    if (url.hostname === "busca.local" && url.pathname === "/") {
       pagina.tipo = "inicio";
       pagina.url = paginaInicial.url;
-    } else if (
-      url.hostname === "busca.local" &&
-      url.pathname === "/search"
-    ) {
+    } else if (url.hostname === "busca.local" && url.pathname === "/search") {
       pagina.tipo = "busca";
       pagina.consulta = url.searchParams.get("q") || "";
       abrirUrlEmNovaAba(criarUrlBuscaGoogle(pagina.consulta));
@@ -140,6 +154,8 @@ DesktopApp.registrarPrograma({
 
   function renderizarResultados(navegador, consulta, urlBusca) {
     const inicial = navegador.querySelector(".pagina-inicial");
+    if (!inicial) return;
+
     const resultado = document.createElement("section");
     resultado.className = "pagina-resultados";
 
@@ -154,7 +170,8 @@ DesktopApp.registrarPrograma({
 
     const aviso = document.createElement("p");
     aviso.className = "aviso-busca";
-    aviso.textContent = "Se a nova aba não abriu, use este link para ver os resultados atualizados:";
+    aviso.textContent =
+      "Se a nova aba não abriu, use este link para ver os resultados atualizados:";
     resultado.append(aviso);
 
     const link = document.createElement("a");
@@ -178,13 +195,15 @@ DesktopApp.registrarPrograma({
     }
 
     const url = criarUrlBuscaGoogle(termo, estouComSorte);
-    abrirUrlEmNovaAba(url);
-    registrarPagina(navegador, {
-      tipo: "busca",
-      url,
-      consulta: termo,
-    });
-    definirStatus(navegador, "Pesquisa enviada. Os resultados abrem em outra aba.");
+    const abriuNovaAba = abrirUrlEmNovaAba(url);
+
+    registrarPagina(navegador, { tipo: "busca", url, consulta: termo });
+    definirStatus(
+      navegador,
+      abriuNovaAba
+        ? "Pesquisa enviada. Os resultados abrem em outra aba."
+        : "O navegador bloqueou a nova aba. Use o link na página.",
+    );
   }
 
   function criarUrlBuscaGoogle(consulta, estouComSorte = false) {
@@ -196,22 +215,32 @@ DesktopApp.registrarPrograma({
 
   function abrirUrlEmNovaAba(url) {
     const novaAba = window.open(url, "_blank");
-    if (novaAba) novaAba.opener = null;
+    if (!novaAba) return false;
+
+    try {
+      novaAba.opener = null;
+    } catch {
+      // Alguns navegadores não permitem alterar opener; a aba já está isolada.
+    }
+
+    return true;
   }
 
   function voltarOuAvancar(navegador, direcao) {
     const estado = obterEstado(navegador);
     const proximo = estado.indice + direcao;
+
     if (proximo < 0 || proximo >= estado.historico.length) {
       definirStatus(navegador, "Não há mais páginas no histórico.");
       return;
     }
+
     estado.indice = proximo;
     mostrarPagina(navegador, estado.historico[estado.indice]);
   }
 
   function encontrarNavegador(alvo) {
-    return alvo.closest(".navegador");
+    return alvo instanceof Element ? alvo.closest(".navegador") : null;
   }
 
   document.addEventListener("submit", (evento) => {
@@ -219,6 +248,7 @@ DesktopApp.registrarPrograma({
     if (!navegador) return;
 
     evento.preventDefault();
+
     if (evento.target.matches(".barra-endereco")) {
       navegarPara(navegador, navegador.querySelector("#endereco").value);
     } else if (evento.target.matches(".form-busca")) {
@@ -255,29 +285,49 @@ DesktopApp.registrarPrograma({
       case "atualizar": {
         const estado = obterEstado(navegador);
         const pagina = estado.historico[estado.indice];
-        if (pagina.tipo === "busca") abrirUrlEmNovaAba(pagina.url);
+        const externa = navegador.querySelector(".pagina-externa");
+
+        if (pagina.tipo === "externa") externa.removeAttribute("src");
         mostrarPagina(navegador, pagina);
         break;
       }
-      case "parar":
-        navegador.querySelector(".pagina-externa").contentWindow.stop();
-        definirStatus(navegador, "Carregamento interrompido");
+      case "parar": {
+        const externa = navegador.querySelector(".pagina-externa");
+
+        try {
+          externa.contentWindow?.stop();
+          definirStatus(navegador, "Carregamento interrompido");
+        } catch {
+          definirStatus(
+            navegador,
+            "Páginas externas não podem ser interrompidas por segurança.",
+          );
+        }
         break;
+      }
       case "foco-busca":
         navegador.querySelector("#campo-busca")?.focus();
         break;
       case "favoritos":
         definirStatus(navegador, "Escolha um favorito na barra Links.");
         break;
-      case "sorte":
-        pesquisar(navegador, navegador.querySelector("#campo-busca").value, true);
+      case "sorte": {
+        const campo = navegador.querySelector("#campo-busca");
+        if (campo) pesquisar(navegador, campo.value, true);
         break;
+      }
+      case "abrir-externo":
       case "nova-aba": {
         const estado = obterEstado(navegador);
         const pagina = estado.historico[estado.indice];
-        abrirUrlEmNovaAba(
-          pagina.tipo === "inicio" ? "https://www.google.com/" : pagina.url,
-        );
+        const url = pagina.tipo === "inicio" ? paginaInicial.url : pagina.url;
+
+        if (!abrirUrlEmNovaAba(url)) {
+          definirStatus(
+            navegador,
+            "O navegador bloqueou a nova aba. Permita pop-ups para este site.",
+          );
+        }
         break;
       }
       default:
@@ -287,14 +337,21 @@ DesktopApp.registrarPrograma({
 
   document.addEventListener("keydown", (evento) => {
     if (evento.key !== "Enter" || !evento.target.matches("#endereco")) return;
+
     evento.preventDefault();
     const navegador = encontrarNavegador(evento.target);
     if (navegador) navegarPara(navegador, evento.target.value);
   });
 
-  document.addEventListener("load", (evento) => {
-    if (!evento.target.matches(".pagina-externa")) return;
-    const navegador = encontrarNavegador(evento.target);
-    if (navegador) definirStatus(navegador, "Concluído");
-  }, true);
+  document.addEventListener(
+    "load",
+    (evento) => {
+      if (!(evento.target instanceof Element)) return;
+      if (!evento.target.matches(".pagina-externa")) return;
+
+      const navegador = encontrarNavegador(evento.target);
+      if (navegador) definirStatus(navegador, "Concluído");
+    },
+    true,
+  );
 })();

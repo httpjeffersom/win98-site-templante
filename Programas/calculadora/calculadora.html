@@ -1,5 +1,10 @@
-<section class="calculadora" aria-label="Calculadora">
-  <div class="calculadora-memoria" aria-live="polite">Memória vazia</div>
+<section
+  class="calculadora"
+  aria-label="Calculadora"
+  tabindex="0"
+  data-foco-inicial
+>
+  <div class="calculadora-memoria" aria-live="polite" aria-label="Indicador de memória"></div>
   <output class="calculadora-display" aria-label="Visor" aria-live="polite">0</output>
 
   <div class="calculadora-teclas">
@@ -36,7 +41,7 @@
     <div class="calculadora-linha">
       <button type="button" data-calc-value="0">0</button>
       <button type="button" data-calc-action="sign" aria-label="Trocar sinal">±</button>
-      <button type="button" data-calc-action="decimal">.</button>
+      <button type="button" data-calc-action="decimal" aria-label="Separador decimal">.</button>
       <button type="button" data-calc-op="subtract">−</button>
     </div>
     <div class="calculadora-linha calculadora-linha-final">

@@ -3,6 +3,8 @@ DesktopApp.registrarPrograma({
   titulo: "Calculadora",
   seletorIcone: ".icon-calculadora",
   caminhoHtml: "Programas/calculadora/calculadora.html",
+  largura: 296,
+  altura: 400,
 });
 
 (() => {
@@ -163,6 +165,9 @@ DesktopApp.registrarPrograma({
           estado.display = formatarNumero(-valor);
         }
         break;
+      case "decimal":
+        inserirDecimal(calculadora);
+        return;
       case "percent": {
         const porcentagem = estado.operacao && estado.acumulado !== null
           ? estado.acumulado * valor / 100
@@ -234,6 +239,14 @@ DesktopApp.registrarPrograma({
   document.addEventListener("keydown", (evento) => {
     const calculadora = encontrarCalculadora(evento.target);
     if (!calculadora || evento.altKey || evento.ctrlKey || evento.metaKey) return;
+
+    // Enter e Espaço em um botão focado já disparam o clique nativo.
+    if (
+      evento.target.closest("button") &&
+      (evento.key === "Enter" || evento.key === " ")
+    ) {
+      return;
+    }
 
     const teclasDigito = evento.key.match(/^\d$/);
     if (teclasDigito) {

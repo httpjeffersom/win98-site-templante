@@ -8,57 +8,179 @@
     <link rel="stylesheet" href="Programas/meucomputador/meucomputador.css" />
     <link rel="stylesheet" href="Programas/navegador/navegador.css" />
     <link rel="stylesheet" href="Programas/calculadora/calculadora.css" />
+    <link rel="stylesheet" href="Programas/blocodenotas/blocodenotas.css" />
+    <link rel="stylesheet" href="Programas/sobre/sobre.css" />
     <link rel="stylesheet" href="componentes/som-inicializacao.css" />
     <link rel="icon" href="imagens/favicon.png" type="image/png" />
   </head>
   <body>
     <div id="desktop">
-      <button class="icon-meucomputer">
-        <img
-          src="imagens/icons-desktop/meu_computador.png"
-          alt="Meu Computador"
-        />
-        <span>Meu computador</span>
-      </button>
+      <div id="icones-desktop">
+        <button
+          class="icon-meucomputer icone-desktop"
+          type="button"
+          data-icone="meu-computador"
+        >
+          <img
+            src="imagens/icons-desktop/meu_computador.png"
+            alt=""
+          />
+          <span>Meu computador</span>
+        </button>
 
-      <button class="icon-navegador">
-        <img src="imagens/icons-desktop/navegador.png" alt="Navegador" />
-        <span>Navegador</span>
-      </button>
+        <button
+          class="icon-navegador icone-desktop"
+          type="button"
+          data-icone="navegador"
+        >
+          <img src="imagens/icons-desktop/navegador.png" alt="" />
+          <span>Navegador</span>
+        </button>
 
-      <button class="icon-calculadora">
-        <img src="imagens/icons-desktop/calculadora.svg" alt="Calculadora" />
-        <span>Calculadora</span>
-      </button>
+        <button
+          class="icon-calculadora icone-desktop"
+          type="button"
+          data-icone="calculadora"
+        >
+          <img src="imagens/icons-desktop/calculadora.svg" alt="" />
+          <span>Calculadora</span>
+        </button>
+
+        <button
+          class="icon-notepad icone-desktop"
+          type="button"
+          data-icone="bloco-de-notas"
+        >
+          <img src="imagens/icons-desktop/notepad.png" alt="" />
+          <span>Bloco de notas</span>
+        </button>
+      </div>
 
       <!-- Menu Iniciar -->
-      <div id="menu-iniciar">
+      <div id="menu-iniciar" role="menu" aria-label="Menu Iniciar">
         <div id="nome-iniciar">Jeffersom.net</div>
 
         <div id="itens-menu">
-          <button class="item-menu-1">📁 teste</button>
+          <button
+            class="item-menu"
+            type="button"
+            role="menuitem"
+            data-programa="meu-computador"
+          >
+            <img
+              class="icone-menu"
+              src="imagens/icons-desktop/meu_computador.png"
+              alt=""
+              aria-hidden="true"
+            />
+            Meu Computador
+          </button>
 
-          <button class="item-menu-2">👤 teste</button>
+          <button
+            class="item-menu"
+            type="button"
+            role="menuitem"
+            data-programa="navegador"
+          >
+            <img
+              class="icone-menu"
+              src="imagens/icons-desktop/navegador.png"
+              alt=""
+              aria-hidden="true"
+            />
+            Navegador
+          </button>
 
-          <button class="item-menu-3">💻 teste</button>
+          <button
+            class="item-menu"
+            type="button"
+            role="menuitem"
+            data-programa="calculadora"
+          >
+            <img
+              class="icone-menu"
+              src="imagens/icons-desktop/calculadora.svg"
+              alt=""
+              aria-hidden="true"
+            />
+            Calculadora
+          </button>
 
-          <button class="item-menu-4">📄 teste</button>
+          <button
+            class="item-menu"
+            type="button"
+            role="menuitem"
+            data-programa="bloco-de-notas"
+          >
+            <img
+              class="icone-menu"
+              src="imagens/icons-desktop/notepad.png"
+              alt=""
+              aria-hidden="true"
+            />
+            Bloco de Notas
+          </button>
 
-          <button class="item-menu-5">📧 teste</button>
+          <div class="separador-menu" role="separator"></div>
+
+          <button
+            class="item-menu"
+            type="button"
+            role="menuitem"
+            data-programa="sobre"
+          >
+            <img
+              class="icone-menu"
+              src="imagens/favicon.png"
+              alt=""
+              aria-hidden="true"
+            />
+            Sobre este site
+          </button>
         </div>
       </div>
       <!-- fim do menu iniciar -->
 
+      <!-- Menu de contexto dos arquivos do Desktop -->
+      <div
+        id="menu-arquivo-desktop"
+        class="menu-contexto"
+        role="menu"
+        aria-label="Arquivo do Desktop"
+        hidden
+      >
+        <button type="button" role="menuitem" data-acao-desktop="abrir">
+          Abrir
+        </button>
+        <button type="button" role="menuitem" data-acao-desktop="excluir">
+          Excluir
+        </button>
+      </div>
+      <!-- fim do menu de contexto -->
+
       <!-- Barra de tarefas -->
       <div id="barra-tarefa">
-        <button id="iniciar-botao">
-          <img src="imagens/windows_iniciar.png" alt="Windows" />
+        <button
+          id="iniciar-botao"
+          type="button"
+          aria-haspopup="true"
+          aria-controls="menu-iniciar"
+          aria-expanded="false"
+        >
+          <img src="imagens/windows_iniciar.png" alt="" />
           <span>Iniciar</span>
         </button>
 
         <div id="programas-abertos"></div>
 
-        <button id="botao-som-inicializacao" type="button" aria-label="Reproduzir som de inicialização" title="Reproduzir som de inicialização">🔊</button>
+        <button
+          id="botao-som-inicializacao"
+          type="button"
+          aria-label="Reproduzir som de inicialização"
+          title="Reproduzir som de inicialização"
+        >
+          🔊
+        </button>
         <div id="relogio"></div>
       </div>
       <!-- fim da Barra de tarefas -->
@@ -66,9 +188,13 @@
 
     <script src="script.js"></script>
     <script src="componentes/janela.js"></script>
+    <script src="componentes/arquivos-desktop.js"></script>
+    <script src="componentes/icones-desktop.js"></script>
     <script src="Programas/meucomputador/meucomputador.js"></script>
     <script src="Programas/navegador/navegador.js"></script>
     <script src="Programas/calculadora/calculadora.js"></script>
+    <script src="Programas/blocodenotas/blocodenotas.js"></script>
+    <script src="Programas/sobre/sobre.js"></script>
     <script src="componentes/som-inicializacao.js"></script>
   </body>
 </html>

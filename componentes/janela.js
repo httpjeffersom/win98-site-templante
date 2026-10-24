@@ -1,223 +1,347 @@
 const WindowManager = (() => {
-  class WindowManager {
-    constructor() {
-      this.janelas = new Map();
-    }
+  const janelas = new Map();
+  let zIndexAtual = 10;
+  let janelaAtiva = null;
 
-    ativarArraste(janela) {
-      const desktop = document.getElementById("desktop");
-      let arrastando = false;
-      let offsetX = 0;
-      let offsetY = 0;
+  const obterDesktop = () => document.getElementById("desktop");
 
-      const iniciarArraste = (evento) => {
-        if (evento.button !== 0) return;
+  function limitarPosicao(janela) {
+    const desktop = obterDesktop();
+    if (!desktop) return;
 
-        const alvoInterativo = evento.target.closest(
-          "button, input, select, textarea, a",
-        );
+    const esquerdaMaxima = Math.max(0, desktop.clientWidth - janela.offsetWidth);
+    const topoMaximo = Math.max(0, desktop.clientHeight - janela.offsetHeight);
+    const esquerda = Number.parseFloat(janela.style.left) || 0;
+    const topo = Number.parseFloat(janela.style.top) || 0;
 
-        if (alvoInterativo) return;
+    janela.style.left = `${Math.min(Math.max(0, esquerda), esquerdaMaxima)}px`;
+    janela.style.top = `${Math.min(Math.max(0, topo), topoMaximo)}px`;
+  }
 
-        arrastando = true;
-        janela.classList.add("arrastando");
+  function atualizarBarraDeTarefas() {
+    janelas.forEach((registro, janela) => {
+      if (!registro.botao) return;
 
-        const rect = janela.getBoundingClientRect();
-        offsetX = evento.clientX - rect.left;
-        offsetY = evento.clientY - rect.top;
+      const ativa =
+        janela === janelaAtiva && !janela.classList.contains("minimizada");
 
-        evento.preventDefault();
-      };
+      registro.botao.classList.toggle("ativo", ativa);
+      registro.botao.setAttribute("aria-pressed", String(ativa));
+    });
+  }
 
-      const moverJanela = (evento) => {
-        if (!arrastando) return;
+  function trazerParaFrente(janela) {
+    if (!janelas.has(janela)) return;
 
-        const rectDesktop = desktop.getBoundingClientRect();
-        let novaEsquerda = evento.clientX - offsetX - rectDesktop.left;
-        let novaTopo = evento.clientY - offsetY - rectDesktop.top;
+    janelaAtiva = janela;
+    zIndexAtual += 1;
+    janela.style.zIndex = String(zIndexAtual);
+    atualizarBarraDeTarefas();
+  }
 
-        const limiteEsquerda = 0;
-        const limiteTopo = 0;
-        const limiteDireita = rectDesktop.width - janela.offsetWidth;
-        const limiteBaixo = rectDesktop.height - janela.offsetHeight;
+  function configurarArraste(janela) {
+    const titulo = janela.querySelector(".window-title");
+    const desktop = obterDesktop();
+    if (!titulo || !desktop) return;
 
-        novaEsquerda = Math.max(
-          limiteEsquerda,
-          Math.min(novaEsquerda, limiteDireita),
-        );
-        novaTopo = Math.max(limiteTopo, Math.min(novaTopo, limiteBaixo));
+    let arrastando = false;
+    let offsetX = 0;
+    let offsetY = 0;
 
-        janela.style.left = `${novaEsquerda}px`;
-        janela.style.top = `${novaTopo}px`;
-      };
+    const mover = (evento) => {
+      if (!arrastando) return;
 
-      const pararArraste = () => {
-        if (!arrastando) return;
+      const areaDesktop = desktop.getBoundingClientRect();
+      const esquerdaMaxima = Math.max(0, areaDesktop.width - janela.offsetWidth);
+      const topoMaximo = Math.max(0, areaDesktop.height - janela.offsetHeight);
+      const esquerda = Math.min(
+        Math.max(0, evento.clientX - offsetX - areaDesktop.left),
+        esquerdaMaxima,
+      );
+      const topo = Math.min(
+        Math.max(0, evento.clientY - offsetY - areaDesktop.top),
+        topoMaximo,
+      );
 
-        arrastando = false;
-        janela.classList.remove("arrastando");
-      };
+      janela.style.left = `${esquerda}px`;
+      janela.style.top = `${topo}px`;
+    };
 
-      janela.addEventListener("mousedown", iniciarArraste);
-      window.addEventListener("mousemove", moverJanela);
-      window.addEventListener("mouseup", pararArraste);
-    }
+    const soltar = (evento) => {
+      if (!arrastando) return;
 
-    async criarJanela(titulo, arquivoHtml) {
-      const janela = document.createElement("div");
-      const desktop = document.getElementById("desktop");
+      arrastando = false;
+      janela.classList.remove("arrastando");
+      window.removeEventListener("pointermove", mover);
+      window.removeEventListener("pointerup", soltar);
+      window.removeEventListener("pointercancel", soltar);
 
-      janela.className = "window";
+      if (evento && titulo.hasPointerCapture?.(evento.pointerId)) {
+        titulo.releasePointerCapture(evento.pointerId);
+      }
+    };
 
-      const largura = desktop.clientWidth * 0.8;
-      const altura = desktop.clientHeight * 0.8;
+    titulo.addEventListener("pointerdown", (evento) => {
+      if (evento.button !== 0) return;
+      if (evento.target.closest("button, a, input, select, textarea")) return;
 
-      janela.style.width = `${largura}px`;
-      janela.style.height = `${altura}px`;
-      janela.style.left = `${(desktop.clientWidth - largura) / 2}px`;
-      janela.style.top = `${(desktop.clientHeight - altura) / 2}px`;
-
-      janela.innerHTML = `
-        <div class="window-title">
-          <span>${titulo}</span>
-
-          <div class="window-buttons">
-            <button class="minimizar" title="Minimizar">_</button>
-            <button class="fechar" title="Fechar">×</button>
-          </div>
-        </div>
-
-        <div class="window-content">
-          Carregando...
-        </div>
-      `;
-
-      desktop.appendChild(janela);
-      this.criarBotaoPrograma(janela, titulo);
-      this.janelas.set(janela, { titulo, arquivoHtml });
+      const areaJanela = janela.getBoundingClientRect();
+      offsetX = evento.clientX - areaJanela.left;
+      offsetY = evento.clientY - areaJanela.top;
+      arrastando = true;
+      janela.classList.add("arrastando");
 
       try {
-        const resposta = await fetch(arquivoHtml);
-
-        if (!resposta.ok) {
-          throw new Error("Não foi possível carregar o arquivo.");
-        }
-
-        const html = await resposta.text();
-        janela.querySelector(".window-content").innerHTML = html;
-
-        if (janela.querySelector(".calculadora")) {
-          const largura = Math.max(
-            220,
-            Math.min(296, desktop.clientWidth - 16),
-          );
-          const altura = Math.max(
-            300,
-            Math.min(400, desktop.clientHeight - 16),
-          );
-
-          janela.style.width = `${largura}px`;
-          janela.style.height = `${altura}px`;
-          janela.style.left = `${(desktop.clientWidth - largura) / 2}px`;
-          janela.style.top = `${(desktop.clientHeight - altura) / 2}px`;
-        }
-
-      } catch (erro) {
-        janela.querySelector(".window-content").innerHTML = `
-          <p>Erro ao carregar o programa.</p>
-        `;
-
-        console.error(erro);
+        titulo.setPointerCapture(evento.pointerId);
+      } catch {
+        // Navegadores sem suporte a captura usam os listeners globais abaixo.
       }
 
-      const botaoMinimizar = janela.querySelector(".minimizar");
-      botaoMinimizar.addEventListener("click", (evento) => {
-        evento.stopPropagation();
-        this.alternarEstadoJanela(janela);
-      });
+      window.addEventListener("pointermove", mover);
+      window.addEventListener("pointerup", soltar);
+      window.addEventListener("pointercancel", soltar);
+      evento.preventDefault();
+    });
 
-      const botaoFechar = janela.querySelector(".fechar");
-      botaoFechar.addEventListener("click", (evento) => {
-        evento.stopPropagation();
-        this.removerBotaoPrograma(janela);
-        this.janelas.delete(janela);
-        janela.remove();
-      });
+    janela.addEventListener("pointerdown", () => trazerParaFrente(janela));
+    janela.addEventListener("focusin", () => trazerParaFrente(janela));
+  }
 
-      this.ativarArraste(janela);
+  function montarJanela(titulo) {
+    const janela = document.createElement("div");
+    janela.className = "window";
+    janela.setAttribute("role", "dialog");
+    janela.setAttribute("aria-label", titulo);
+
+    const barraTitulo = document.createElement("div");
+    barraTitulo.className = "window-title";
+
+    const textoTitulo = document.createElement("span");
+    textoTitulo.className = "window-title-text";
+    textoTitulo.textContent = titulo;
+
+    const areaBotoes = document.createElement("div");
+    areaBotoes.className = "window-buttons";
+
+    const botaoMinimizar = document.createElement("button");
+    botaoMinimizar.type = "button";
+    botaoMinimizar.className = "minimizar";
+    botaoMinimizar.title = "Minimizar";
+    botaoMinimizar.setAttribute("aria-label", "Minimizar janela");
+    botaoMinimizar.textContent = "_";
+
+    const botaoFechar = document.createElement("button");
+    botaoFechar.type = "button";
+    botaoFechar.className = "fechar";
+    botaoFechar.title = "Fechar";
+    botaoFechar.setAttribute("aria-label", "Fechar janela");
+    botaoFechar.textContent = "×";
+
+    areaBotoes.append(botaoMinimizar, botaoFechar);
+    barraTitulo.append(textoTitulo, areaBotoes);
+
+    const conteudo = document.createElement("div");
+    conteudo.className = "window-content";
+    conteudo.textContent = "Carregando...";
+
+    janela.append(barraTitulo, conteudo);
+
+    return { janela, conteudo, botaoMinimizar, botaoFechar };
+  }
+
+  function calcularTamanho(desktop, opcoes) {
+    const larguraDisponivel = Math.max(200, desktop.clientWidth - 16);
+    const alturaDisponivel = Math.max(160, desktop.clientHeight - 16);
+    const largura = Math.min(
+      opcoes.largura ?? desktop.clientWidth * 0.8,
+      larguraDisponivel,
+    );
+    const altura = Math.min(
+      opcoes.altura ?? desktop.clientHeight * 0.8,
+      alturaDisponivel,
+    );
+
+    return { largura, altura };
+  }
+
+  function posicionarNoCentro(janela, desktop) {
+    const esquerda = Math.max(0, (desktop.clientWidth - janela.offsetWidth) / 2);
+    const topo = Math.max(0, (desktop.clientHeight - janela.offsetHeight) / 2);
+
+    janela.style.left = `${esquerda}px`;
+    janela.style.top = `${topo}px`;
+  }
+
+  function criarBotaoPrograma(janela, titulo, icone) {
+    const area = document.getElementById("programas-abertos");
+    if (!area) return null;
+
+    const botao = document.createElement("button");
+    botao.type = "button";
+    botao.className = "botao-programa";
+    botao.title = titulo;
+    botao.setAttribute("aria-pressed", "false");
+
+    const texto = document.createElement("span");
+    texto.className = "botao-programa-texto";
+    texto.textContent = titulo;
+
+    if (icone) {
+      const imagem = document.createElement("img");
+      imagem.src = icone;
+      imagem.alt = "";
+      botao.append(imagem, texto);
+    } else {
+      botao.append(texto);
     }
 
-    criarBotaoPrograma(janela, titulo) {
-      const area = document.getElementById("programas-abertos");
-      const botao = document.createElement("button");
+    area.appendChild(botao);
 
-      botao.className = "botao-programa";
-      botao.textContent = titulo;
-      area.appendChild(botao);
-
-      janela.botaoPrograma = botao;
-
-      botao.addEventListener("click", () => {
-        this.alternarEstadoJanela(janela);
-      });
-    }
-
-    alternarEstadoJanela(janela) {
+    botao.addEventListener("click", () => {
       const minimizada = janela.classList.contains("minimizada");
 
-      if (minimizada) {
-        janela.classList.remove("minimizada");
-        janela.style.display = "flex";
-      } else {
-        janela.classList.add("minimizada");
-        janela.style.display = "none";
+      if (!minimizada && janela === janelaAtiva) {
+        alternarEstadoJanela(janela);
+        return;
       }
 
-      if (janela.botaoPrograma) {
-        janela.botaoPrograma.classList.toggle(
-          "ativo",
-          !janela.classList.contains("minimizada"),
-        );
+      if (minimizada) {
+        alternarEstadoJanela(janela);
+      } else {
+        trazerParaFrente(janela);
       }
+    });
+
+    return botao;
+  }
+
+  function alternarEstadoJanela(janela) {
+    if (!janelas.has(janela)) return;
+
+    const minimizada = janela.classList.toggle("minimizada");
+    janela.style.display = minimizada ? "none" : "flex";
+
+    if (minimizada) {
+      if (janelaAtiva === janela) janelaAtiva = null;
+      atualizarBarraDeTarefas();
+      return;
     }
 
-    removerBotaoPrograma(janela) {
-      if (janela.botaoPrograma) {
-        janela.botaoPrograma.remove();
-      }
+    trazerParaFrente(janela);
+  }
+
+  function fecharJanela(janela) {
+    const registro = janelas.get(janela);
+    if (!registro) return;
+
+    if (registro.botao) registro.botao.remove();
+    janelas.delete(janela);
+    janela.remove();
+
+    if (janelaAtiva !== janela) {
+      atualizarBarraDeTarefas();
+      return;
+    }
+
+    janelaAtiva = null;
+
+    const restantes = [...janelas.keys()].filter(
+      (outra) => !outra.classList.contains("minimizada"),
+    );
+    const proxima = restantes[restantes.length - 1];
+
+    if (proxima) {
+      trazerParaFrente(proxima);
+    } else {
+      atualizarBarraDeTarefas();
     }
   }
 
-  const manager = new WindowManager();
+  async function criarJanela(titulo, arquivoHtml, opcoes = {}) {
+    const desktop = obterDesktop();
+    if (!desktop) return null;
+
+    const existente = [...janelas.keys()].find(
+      (janela) => janela.dataset.arquivoHtml === arquivoHtml,
+    );
+
+    if (existente) {
+      if (existente.classList.contains("minimizada")) {
+        alternarEstadoJanela(existente);
+      }
+      trazerParaFrente(existente);
+      return existente;
+    }
+
+    const { janela, conteudo, botaoMinimizar, botaoFechar } =
+      montarJanela(titulo);
+
+    janela.dataset.arquivoHtml = arquivoHtml;
+
+    const { largura, altura } = calcularTamanho(desktop, opcoes);
+    janela.style.width = `${largura}px`;
+    janela.style.height = `${altura}px`;
+
+    desktop.appendChild(janela);
+    posicionarNoCentro(janela, desktop);
+
+    const botao = criarBotaoPrograma(janela, titulo, opcoes.icone);
+    janelas.set(janela, { titulo, arquivoHtml, botao });
+    configurarArraste(janela);
+    trazerParaFrente(janela);
+
+    botaoMinimizar.addEventListener("click", (evento) => {
+      evento.stopPropagation();
+      alternarEstadoJanela(janela);
+    });
+
+    botaoFechar.addEventListener("click", (evento) => {
+      evento.stopPropagation();
+      fecharJanela(janela);
+    });
+
+    try {
+      const resposta = await fetch(arquivoHtml);
+
+      if (!resposta.ok) {
+        throw new Error(`Não foi possível carregar ${arquivoHtml} (HTTP ${resposta.status}).`);
+      }
+
+      conteudo.innerHTML = await resposta.text();
+
+      const focoInicial = conteudo.querySelector("[data-foco-inicial]");
+      if (focoInicial && janela === janelaAtiva) focoInicial.focus();
+    } catch (erro) {
+      conteudo.replaceChildren();
+
+      const mensagem = document.createElement("p");
+      mensagem.className = "window-erro";
+      mensagem.textContent = "Não foi possível carregar o programa.";
+
+      const dica = document.createElement("p");
+      dica.className = "window-erro-dica";
+      dica.textContent =
+        "Se você abriu o index.html direto do disco, inicie um servidor local (veja o README).";
+
+      conteudo.append(mensagem, dica);
+      console.error(erro);
+    }
+
+    return janela;
+  }
+
+  function ajustarJanelas() {
+    janelas.forEach((_, janela) => limitarPosicao(janela));
+  }
+
+  window.addEventListener("resize", ajustarJanelas);
 
   return {
-    ativarArraste: (janela) => manager.ativarArraste(janela),
-    criarJanela: (titulo, arquivoHtml) => manager.criarJanela(titulo, arquivoHtml),
-    criarBotaoPrograma: (janela, titulo) =>
-      manager.criarBotaoPrograma(janela, titulo),
-    alternarEstadoJanela: (janela) => manager.alternarEstadoJanela(janela),
-    removerBotaoPrograma: (janela) => manager.removerBotaoPrograma(janela),
+    criarJanela,
+    fecharJanela,
+    alternarEstadoJanela,
+    trazerParaFrente,
   };
 })();
-
-function ativarArraste(janela) {
-  return WindowManager.ativarArraste(janela);
-}
-
-async function criarJanela(titulo, arquivoHtml) {
-  return WindowManager.criarJanela(titulo, arquivoHtml);
-}
-
-function criarBotaoPrograma(janela, titulo) {
-  return WindowManager.criarBotaoPrograma(janela, titulo);
-}
-
-function alternarEstadoJanela(janela) {
-  return WindowManager.alternarEstadoJanela(janela);
-}
-
-function removerBotaoPrograma(janela) {
-  return WindowManager.removerBotaoPrograma(janela);
-}
 
 window.WindowManager = WindowManager;

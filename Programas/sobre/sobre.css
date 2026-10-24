@@ -1,0 +1,78 @@
+.window-content:has(.sobre) {
+  display: flex;
+  padding: 0;
+  overflow: hidden;
+  background: #c0c0c0;
+}
+
+.sobre {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  min-width: 0;
+  padding: 16px;
+
+  color: #000;
+  text-align: center;
+  font: 12px Tahoma, Arial, sans-serif;
+}
+
+.sobre-logo {
+  width: 48px;
+  height: 48px;
+  image-rendering: pixelated;
+}
+
+.sobre h1 {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.sobre-descricao {
+  max-width: 320px;
+  line-height: 1.4;
+}
+
+.sobre-detalhes {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  width: min(100%, 300px);
+  margin-top: 4px;
+  padding: 8px;
+
+  background: #fff;
+
+  border-top: 2px solid #808080;
+  border-left: 2px solid #808080;
+  border-right: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+
+  text-align: left;
+}
+
+.sobre-detalhes div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sobre-detalhes dt {
+  color: #333;
+}
+
+.sobre-detalhes dd {
+  margin: 0;
+  font-weight: bold;
+}
+
+.sobre-rodape {
+  margin-top: 4px;
+  color: #555;
+  font-size: 11px;
+}

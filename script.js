@@ -14,6 +14,23 @@ const DesktopApp = (() => {
     const minutos = String(agora.getMinutes()).padStart(2, "0");
 
     relogio.textContent = `${horas}:${minutos}`;
+    relogio.title = agora.toLocaleDateString("pt-BR", {
+      weekday: "long",
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    });
+  }
+
+  function definirMenuIniciar(aberto) {
+    const botao = obterElemento("iniciar-botao");
+    const menu = obterElemento("menu-iniciar");
+
+    if (!botao || !menu) return;
+
+    menu.classList.toggle("aberto", aberto);
+    botao.classList.toggle("ativo", aberto);
+    botao.setAttribute("aria-expanded", String(aberto));
   }
 
   function configurarMenuIniciar() {
@@ -24,47 +41,101 @@ const DesktopApp = (() => {
 
     botao.addEventListener("click", (evento) => {
       evento.stopPropagation();
-      const deveExibir = menu.style.display !== "flex";
-      menu.style.display = deveExibir ? "flex" : "none";
+      definirMenuIniciar(!menu.classList.contains("aberto"));
     });
 
     document.addEventListener("click", (evento) => {
-      const clicouNoBotao = botao.contains(evento.target);
-      const clicouNoMenu = menu.contains(evento.target);
+      if (botao.contains(evento.target) || menu.contains(evento.target)) return;
+      definirMenuIniciar(false);
+    });
 
-      if (!clicouNoBotao && !clicouNoMenu) {
-        menu.style.display = "none";
+    document.addEventListener("keydown", (evento) => {
+      if (evento.key !== "Escape") return;
+
+      if (menu.classList.contains("aberto")) {
+        definirMenuIniciar(false);
+        botao.focus();
       }
+    });
+
+    menu.addEventListener("click", (evento) => {
+      const item = evento.target.closest("[data-programa]");
+      if (!item) return;
+
+      abrirPrograma(item.dataset.programa);
+      definirMenuIniciar(false);
     });
   }
 
-  function registrarPrograma({ id, titulo, seletorIcone, caminhoHtml }) {
-    if (!id || !titulo || !seletorIcone || !caminhoHtml) {
+  function configurarSelecaoDeIcones() {
+    document.addEventListener("click", (evento) => {
+      const clicado = evento.target.closest(".icone-desktop");
+
+      document.querySelectorAll(".icone-desktop").forEach((icone) => {
+        icone.classList.toggle("selecionado", icone === clicado);
+      });
+    });
+  }
+
+  function registrarPrograma({
+    id,
+    titulo,
+    seletorIcone,
+    caminhoHtml,
+    largura,
+    altura,
+    icone,
+  }) {
+    if (!id || !titulo || !caminhoHtml) {
       return;
     }
 
-    programas.set(id, { id, titulo, seletorIcone, caminhoHtml });
+    const elementoIcone = seletorIcone
+      ? document.querySelector(seletorIcone)
+      : null;
 
-    const icone = document.querySelector(seletorIcone);
+    const iconePrograma =
+      icone ||
+      elementoIcone?.querySelector("img")?.getAttribute("src") ||
+      null;
 
-    if (icone) {
-      icone.addEventListener("dblclick", () => abrirPrograma(id));
-    }
+    programas.set(id, {
+      id,
+      titulo,
+      caminhoHtml,
+      largura,
+      altura,
+      icone: iconePrograma,
+    });
+
+    if (!elementoIcone) return;
+
+    elementoIcone.addEventListener("dblclick", () => abrirPrograma(id));
+
+    // Enter e Espaço disparam "click" com detail 0 em botões.
+    elementoIcone.addEventListener("click", (evento) => {
+      if (evento.detail === 0) abrirPrograma(id);
+    });
   }
 
   function abrirPrograma(id) {
     const programa = programas.get(id);
 
     if (!programa) {
-      return;
+      console.warn(`Programa não registrado: ${id}`);
+      return null;
     }
 
-    if (typeof criarJanela === "function") {
-      criarJanela(programa.titulo, programa.caminhoHtml);
-      return;
+    if (typeof WindowManager === "undefined") {
+      console.warn(`janela.js ainda não foi carregado para abrir: ${programa.titulo}`);
+      return null;
     }
 
-    console.warn(`janela.js ainda não foi carregado para abrir: ${programa.titulo}`);
+    return WindowManager.criarJanela(programa.titulo, programa.caminhoHtml, {
+      largura: programa.largura,
+      altura: programa.altura,
+      icone: programa.icone,
+    });
   }
 
   function inicializar() {
@@ -74,6 +145,8 @@ const DesktopApp = (() => {
     atualizarRelogio();
     setInterval(atualizarRelogio, 1000);
     configurarMenuIniciar();
+    configurarSelecaoDeIcones();
+    definirMenuIniciar(false);
   }
 
   return {

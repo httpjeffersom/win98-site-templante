@@ -2,7 +2,11 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "MS Sans Serif", sans-serif;
+}
+
+body {
+  font-family: Tahoma, "MS Sans Serif", Arial, sans-serif;
+  overflow: hidden;
 }
 
 #desktop {
@@ -13,10 +17,83 @@
   overflow: hidden;
 }
 
+/* Ícones da área de trabalho */
+
+#icones-desktop {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.icone-desktop {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  padding: 5px;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font: 12px "MS Sans Serif", Tahoma, sans-serif;
+  text-align: center;
+  cursor: pointer;
+  pointer-events: auto;
+  touch-action: none;
+  user-select: none;
+}
+
+.icone-desktop.arrastando {
+  z-index: 5;
+  cursor: grabbing;
+}
+
+.icone-desktop img {
+  width: 32px;
+  height: 32px;
+  margin-bottom: 4px;
+  image-rendering: pixelated;
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+.icone-desktop span {
+  overflow-wrap: break-word;
+}
+
+.icone-desktop[data-nota-id] span {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  max-height: 2.6em;
+  overflow: hidden;
+}
+
+.icone-desktop.selecionado img {
+  filter: brightness(0.55) sepia(1) hue-rotate(185deg) saturate(4);
+}
+
+.icone-desktop.selecionado span {
+  background: #000080;
+  outline: 1px dotted #fff;
+  outline-offset: 1px;
+}
+
+.icone-desktop:focus-visible {
+  outline: 1px dotted #fff;
+  outline-offset: -1px;
+}
+
+/* Barra de tarefas */
+
 #barra-tarefa {
   position: fixed;
   bottom: 0;
   left: 0;
+  z-index: 100;
 
   width: 100%;
   height: 40px;
@@ -47,6 +124,14 @@
   cursor: pointer;
 }
 
+#iniciar-botao.ativo {
+  border-top: 2px solid #808080;
+  border-left: 2px solid #808080;
+  border-right: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
+  background: #a8a8a8;
+}
+
 #iniciar-botao img {
   width: 18px;
   height: 18px;
@@ -68,6 +153,8 @@
   border-bottom: 2px solid #ffffff;
 }
 
+/* Menu Iniciar */
+
 #menu-iniciar {
   display: none;
 
@@ -75,8 +162,8 @@
   left: 0;
   bottom: 40px;
 
-  width: 300px;
-  height: 500px;
+  width: min(300px, 100vw);
+  max-height: calc(100vh - 44px);
 
   background: #c0c0c0;
 
@@ -89,9 +176,14 @@
   z-index: 1000;
 }
 
+#menu-iniciar.aberto {
+  display: flex;
+}
+
 #nome-iniciar {
-  width: 32px;
-  height: 100%;
+  width: 30px;
+  flex: none;
+  height: auto;
 
   background: linear-gradient(to bottom, #0a246a, #245edb, #1c52d4);
   display: flex;
@@ -112,30 +204,96 @@
   display: flex;
   flex-direction: column;
   flex: 1;
+  min-width: 0;
+  padding: 3px;
+  overflow-y: auto;
 }
 
 .item-menu {
-  background: #c0c0c0;
-  border: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 
   width: 100%;
-  height: 40px;
+  min-height: 38px;
 
+  background: transparent;
+  border: none;
+
+  color: #000;
   text-align: left;
-  padding-left: 12px;
+  padding: 0 8px;
 
   cursor: pointer;
-  font-size: 14px;
+  font: 13px Tahoma, "MS Sans Serif", sans-serif;
 }
 
-.item-menu:hover {
+.item-menu:hover,
+.item-menu:focus-visible {
   background: #000080;
-  color: white;
+  color: #fff;
+  outline: none;
 }
 
-body {
-  font-family: Tahoma, sans-serif;
+.icone-menu {
+  width: 24px;
+  height: 24px;
+  flex: none;
+  object-fit: contain;
+  image-rendering: pixelated;
 }
+
+.separador-menu {
+  height: 2px;
+  margin: 4px 6px;
+  border-top: 1px solid #808080;
+  border-bottom: 1px solid #fff;
+}
+
+/* Menu de contexto dos arquivos do Desktop */
+
+.menu-contexto {
+  position: fixed;
+  z-index: 1200;
+
+  min-width: 140px;
+  padding: 2px;
+
+  background: #c0c0c0;
+  border-top: 2px solid #fff;
+  border-left: 2px solid #fff;
+  border-right: 2px solid #808080;
+  border-bottom: 2px solid #808080;
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.35);
+}
+
+.menu-contexto[hidden] {
+  display: none;
+}
+
+.menu-contexto button {
+  display: block;
+  width: 100%;
+  min-height: 22px;
+  padding: 0 12px;
+
+  border: 0;
+  background: transparent;
+
+  color: #000;
+  text-align: left;
+  font: 12px Tahoma, "MS Sans Serif", sans-serif;
+  cursor: pointer;
+}
+
+.menu-contexto button:hover,
+.menu-contexto button:focus-visible {
+  background: #000080;
+  color: #fff;
+  outline: none;
+}
+
+/* Janelas */
 
 .window {
   position: absolute;
@@ -145,6 +303,8 @@ body {
 
   width: 500px;
   height: 350px;
+  max-width: calc(100% - 8px);
+  max-height: calc(100% - 8px);
 
   background: #c0c0c0;
 
@@ -161,6 +321,7 @@ body {
 
 .window-title {
   height: 24px;
+  flex: none;
 
   background: linear-gradient(to right, #000080, #1084d0);
 
@@ -169,6 +330,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 6px;
 
   padding: 0 4px;
 
@@ -176,10 +338,19 @@ body {
   font-weight: bold;
 
   cursor: move;
+  user-select: none;
+}
+
+.window-title-text {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .window-buttons {
   display: flex;
+  flex: none;
   gap: 2px;
 }
 
@@ -210,8 +381,22 @@ body {
 
 .window-content {
   flex: 1;
+  min-height: 0;
   background: white;
   padding: 10px;
+  overflow: auto;
+}
+
+.window-erro {
+  color: #a00;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.window-erro-dica {
+  color: #444;
+  font-size: 12px;
+  line-height: 1.4;
 }
 
 .window.arrastando {
@@ -226,8 +411,11 @@ body {
   display: none !important;
 }
 
+/* Programas abertos na barra de tarefas */
+
 #programas-abertos {
   flex: 1;
+  min-width: 0;
 
   display: flex;
 
@@ -239,10 +427,15 @@ body {
 }
 
 .botao-programa {
-  min-width: 160px;
-  max-width: 200px;
+  flex: 1 1 120px;
+  min-width: 0;
+  max-width: 180px;
 
   height: 32px;
+
+  display: flex;
+  align-items: center;
+  gap: 5px;
 
   background: #c0c0c0;
 
@@ -252,9 +445,23 @@ body {
   border-bottom: 2px solid #808080;
 
   cursor: pointer;
-  padding: 0 8px;
+  padding: 0 6px;
   text-align: left;
   font-size: 12px;
+}
+
+.botao-programa img {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  image-rendering: pixelated;
+}
+
+.botao-programa-texto {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .botao-programa.ativo {
@@ -263,4 +470,9 @@ body {
   border-left: 2px solid #808080;
   border-right: 2px solid #ffffff;
   border-bottom: 2px solid #ffffff;
+}
+
+button:focus-visible {
+  outline: 1px dotted #000;
+  outline-offset: -4px;
 }
